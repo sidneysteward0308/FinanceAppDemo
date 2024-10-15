@@ -15,10 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
 
-
   String userEmail = "";
   String userPassword = "";
-
 
   //check box
   bool isChecked = false;
@@ -26,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 //style variables, will later moved into a style class
   double spacingHeight = 10;
 
-   Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
+  Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
 
   late Color checkBoxColor;
 
@@ -98,7 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: spacingHeight,
               ),
-            
               Row(
                 children: [
                   Checkbox(
@@ -125,7 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() {
                         userEmail = userEmailController.text;
                         userPassword = userPasswordController.text;
-                      
                       });
                     },
                     style: ElevatedButton.styleFrom(
@@ -134,7 +130,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       "Sign Up",
                       style: GoogleFonts.playfairDisplay(
-                          color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700),
                     )),
               ),
               const SizedBox(
@@ -231,11 +229,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 45),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                padding: const EdgeInsets.only(top: 15, bottom: 25),
+                child: Column(
                   children: [
-                    const Text("Already have an account?"),
+                    const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {},
                       style: TextButton.styleFrom(
@@ -243,11 +240,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         minimumSize: const Size(
                             0, 0), // Optionally set minimum size to zero
                       ),
-                      child: const Text("Login"),
+                      child: const Text("Create Account"),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
