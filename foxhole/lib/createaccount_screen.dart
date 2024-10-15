@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class CreateaccountScreen extends StatefulWidget {
+  const CreateaccountScreen({super.key});
 
   @override
-  State<LoginScreen> createState() {
-    return _LoginScreenState();
+  State<CreateaccountScreen> createState() {
+    return _CreateaccountScreenState();
   }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _CreateaccountScreenState extends State<CreateaccountScreen> {
 //variables to be used in later logic behind storing customer info
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
-
+  TextEditingController confirmedPasswordController = TextEditingController();
 
   String userEmail = "";
   String userPassword = "";
-
+  String confirmedPassword = "";
 
   //check box
   bool isChecked = false;
@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 //style variables, will later moved into a style class
   double spacingHeight = 10;
 
-   Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
+  Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
 
   late Color checkBoxColor;
 
@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 220),
                 child: Text(
-                  "Login",
+                  "Let's get started",
                   style: GoogleFonts.playfairDisplay(
                       color: Colors.black, fontSize: 48),
                 ),
@@ -98,7 +98,17 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: spacingHeight,
               ),
-            
+              TextField(
+                controller: confirmedPasswordController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  hintText: 'Confirm Password',
+                  hintStyle: GoogleFonts.playfairDisplay(
+                      color: Colors.black, fontSize: 16),
+                ),
+              ),
               Row(
                 children: [
                   Checkbox(
@@ -125,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() {
                         userEmail = userEmailController.text;
                         userPassword = userPasswordController.text;
-                      
+                        confirmedPassword = confirmedPasswordController.text;
                       });
                     },
                     style: ElevatedButton.styleFrom(
@@ -151,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
-                      'Or Login With',
+                      'Or Sign Up with',
                       style:
                           TextStyle(color: Color.fromARGB(255, 137, 136, 136)),
                     ),
@@ -189,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 10.0), // Add space between the logo and text
 
                     const Text(
-                      "Login with Google",
+                      "Sign up with Google",
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],
@@ -221,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(
                         width: 10.0), // Add space between the logo and text
                     const Text(
-                      "Login with Apple",
+                      "Sign up with Apple",
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],
