@@ -65,7 +65,10 @@ flutter:
     - assets/images/google_logo.png
     - assets/images/apple_logo.png
     - assets/images/avatar.png
-    - assets/images/gear.png
+    - assets/images/income.png
+    - assets/images/expenses.png
+    - assets/images/payments.png
+    - assets/images/investments.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

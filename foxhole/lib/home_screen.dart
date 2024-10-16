@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foxhole/models/category_container.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -108,64 +109,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 25,
                           ),
 
-                          //Utilites
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 240, 240, 240),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            height: 115,
-                            width: 170,
-                            child:  Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Padding(
-                                  padding:const EdgeInsets.only(
-                                    left: 10,
-                                    right: 10,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text("\$447.84", style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w900),),
-                                      const SizedBox(
-                                        width: 60,
-                                      ),
-                                    Text("84%", style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w900),),
-                                    ],
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 10, bottom: 5),
-                                  child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text("Placeholder")),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Image(
-                                      image:
-                                          AssetImage("assets/images/gear.png"), height: 50,width: 50,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          //income
+                          CategoryContainer(
+                            categoryAmount: 447.84,
+                            categoryPercent: 84,
+                            categoryName: "Income",
+                            categoryImagePath: "assets/images/income.png",
                           ),
                           const SizedBox(
                             width: 10,
                           ),
 
                           //Expenses
-                          Container(
-                            decoration: BoxDecoration(
-                               color: const Color.fromARGB(255, 240, 240, 240),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            height: 115,
-                            width: 170,
-                          )
+                          CategoryContainer(
+                            categoryAmount: 447.84,
+                            categoryPercent: 84,
+                            categoryName: "Expenses",
+                            categoryImagePath: "assets/images/expenses.png",
+                          ),
                         ],
                       ),
                       Row(
@@ -174,25 +135,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 25,
                           ),
                           //Payments
-                          Container(
-                            decoration: BoxDecoration(
-                             color: const Color.fromARGB(255, 240, 240, 240),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            height: 115,
-                            width: 170,
+                          CategoryContainer(
+                            categoryAmount: 447.84,
+                            categoryPercent: 84,
+                            categoryName: "Payments",
+                            categoryImagePath: "assets/images/payments.png",
                           ),
                           const SizedBox(
                             width: 10,
                           ),
-                          //Subscriptions
-                          Container(
-                            decoration: BoxDecoration(
-                             color: const Color.fromARGB(255, 240, 240, 240),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            height: 115,
-                            width: 170,
+                          //Investments
+                          CategoryContainer(
+                            categoryAmount: 447.84,
+                            categoryPercent: 84,
+                            categoryName: "Investments",
+                            categoryImagePath: "assets/images/investments.png",
                           ),
                         ],
                       ),
@@ -205,7 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.black,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12),  color: Colors.black,),
+       
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
           child: GNav(
