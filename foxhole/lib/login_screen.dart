@@ -166,12 +166,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, // Text color
-                  backgroundColor: Colors.white, // Button background color
+                  foregroundColor: Colors.black, 
+                  backgroundColor: Colors.white, 
                   padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0), // Add padding
+                      vertical: 12.0, horizontal: 16.0), 
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0), // Button shape
+                    borderRadius: BorderRadius.circular(30.0), 
                   ),
                 ),
                 child: Row(
@@ -179,8 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/google_logo.png', // Path to your Google logo
-                      height: 24.0, // Adjust the height of the logo
+                      'assets/images/google_logo.png',
+                      height: 24.0, 
                     ),
 
                     const SizedBox(
@@ -199,12 +199,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, // Text color
-                  backgroundColor: Colors.white, // Button background color
+                  foregroundColor: Colors.black, 
+                  backgroundColor: Colors.white, 
                   padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0), // Add padding
+                      vertical: 12.0, horizontal: 16.0), 
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0), // Button shape
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
                 child: Row(
@@ -212,12 +212,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/apple_logo.png', // Path to your Google logo
-                      height: 24.0, // Adjust the height of the logo
+                      'assets/images/apple_logo.png',
+                      height: 24.0, 
                     ),
 
                     const SizedBox(
-                        width: 10.0), // Add space between the logo and text
+                        width: 10.0), 
                     const Text(
                       "Login with Apple",
                       style: TextStyle(fontSize: 16.0),
@@ -236,9 +236,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       onPressed: () {},
                       style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero, // Remove default padding
+                        padding: EdgeInsets.zero,
                         minimumSize: const Size(
-                            0, 0), // Optionally set minimum size to zero
+                            0, 0), 
                       ),
                       child: const Text("Create Account"),
                     ),
