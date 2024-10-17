@@ -66,7 +66,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     Text(
                       "\$10,0000",
                       style:
-                          GoogleFonts.lato(fontSize: 30, color: Colors.black),
+                          GoogleFonts.lato(fontSize: 40, color: Colors.black),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +109,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 22,
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -122,13 +122,13 @@ class _WalletScreenState extends State<WalletScreen> {
                 height: 10,
               ),
               Container(
-                height: 503,
+                height: 485,
                 width: 400,
                 padding: const EdgeInsets.only( top: 10,
-                     bottom: 15, left: 12, right: 12),
+                     left: 8, right: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 213, 209, 209),
+                  color: Colors.transparent,
                 ),
                 child: const SingleChildScrollView(
                   child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
