@@ -100,7 +100,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             style: GoogleFonts.lato(color: Colors.white),
                           ),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
+                              backgroundColor: const Color.fromARGB(255,2, 48, 71),
                               minimumSize: Size(170, 50)),
                         ),
                       ],
@@ -121,43 +121,48 @@ class _WalletScreenState extends State<WalletScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 485,
-                width: 400,
-                padding: const EdgeInsets.only( top: 10,
-                     left: 8, right: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.transparent,
-                ),
-                child: const SingleChildScrollView(
-                  child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  
-                    children: [
-                    RecentTransactions(),
-                    SizedBox(height: 4,),
-                     RecentTransactions(),
-                    SizedBox(height: 4,),
-                     RecentTransactions(),
-                    SizedBox(height: 4,),
-                    RecentTransactions(),
-                    SizedBox(height: 4,),
-                    RecentTransactions(),
-                    SizedBox(height: 4,),
-                    RecentTransactions(),
-                    SizedBox(height: 4,),
-                    RecentTransactions(),
-                    SizedBox(height: 4,),
-                    RecentTransactions(),
-                    SizedBox(height: 4,),
-                     
-                  ],),
+              Expanded(
+                child: Container(
+                 
+                  padding: const EdgeInsets.only( top: 10,
+                       left: 8, right: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black,
+                  ),
+                  child: const SingleChildScrollView(
+                    child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    
+                      children: [
+                      RecentTransactions(),
+                      SizedBox(height: 4,),
+                       RecentTransactions(),
+                      SizedBox(height: 4,),
+                       RecentTransactions(),
+                      SizedBox(height: 4,),
+                      RecentTransactions(),
+                      SizedBox(height: 4,),
+                      RecentTransactions(),
+                      SizedBox(height: 4,),
+                      RecentTransactions(),
+                      SizedBox(height: 4,),
+                      RecentTransactions(),
+                      SizedBox(height: 4,),
+                      RecentTransactions(),
+                      SizedBox(height: 4,),
+                       
+                    ],),
+                  ),
                 ),
               )
             ],
           ),
         ),
       ),
+
+      /*make a class that has the Gnav bar and call it from all other classes,
+      changes will only need to be made in one place.  Figure out is there is a better way
+      to have the nav bar appear throughout the app*/
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),

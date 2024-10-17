@@ -26,22 +26,26 @@ class RecentTransactions extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(width: 10,),
-          Column(
-            
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Organization",
-                style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900),
-              ),
-              Text(
-                "Organization",
-                style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
-              ),
-            ],
+          const SizedBox(width: 10,),
+          Padding(
+            padding: const EdgeInsets.only(left: 2),
+            child: Column(
+              
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Organization",
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900),
+                ),
+                     
+                Text(
+                  "transaction status",
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
+                ),
+              ],
+            ),
           ),
-          SizedBox(width: 180,),
+          SizedBox(width: 165,),
           Text(
             "\$30",
             style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
