@@ -12,7 +12,7 @@ class RecentTransactions extends StatelessWidget {
       padding: const EdgeInsets.only(left: 15, right: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
+        color: Colors.black,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -23,28 +23,28 @@ class RecentTransactions extends StatelessWidget {
             width: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
-          const SizedBox(width: 10,),
+          SizedBox(width: 10,),
           Column(
             
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "Organization",
-                style: GoogleFonts.lato(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w900),
+                style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900),
               ),
               Text(
-                "Payment Status",
-                style: GoogleFonts.lato(color: Colors.black, fontSize: 12),
+                "Organization",
+                style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
               ),
             ],
           ),
           SizedBox(width: 180,),
           Text(
             "\$30",
-            style: GoogleFonts.lato(color: Colors.black, fontSize: 12),
+            style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
           ),
         ],
       ),
