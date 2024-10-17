@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foxhole/models/recent_transactions.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -21,21 +24,135 @@ class _WalletScreenState extends State<WalletScreen> {
       backgroundColor: Colors.white,
       body: Align(
         child: Container(
+          padding:
+              const EdgeInsets.only(top: 70, bottom: 15, left: 15, right: 15),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text("Balance"),
-              const Text("Placeholder Balance"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Deposit"),
+              Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Wallet",
+                        style: GoogleFonts.playfairDisplay(
+                            fontSize: 28, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                      onPressed: () {}, child: const Text("Widthdraw"))
-                ],
+                ),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              Container(
+                padding:
+                    EdgeInsets.only(top: 16.0, bottom: 16, left: 20, right: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Current Balance"),
+                    Text(
+                      "\$10,0000",
+                      style:
+                          GoogleFonts.lato(fontSize: 30, color: Colors.black),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.arrow_downward,
+                            color: Colors.black,
+                          ),
+                          label: Text(
+                            'Deposit',
+                            style: GoogleFonts.lato(color: Colors.black),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            minimumSize: Size(170, 50),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.arrow_outward,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            'Widthdraw',
+                            style: GoogleFonts.lato(color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              minimumSize: Size(170, 50)),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Recent Transactions",
+                  style: GoogleFonts.lato(color: Colors.black, fontSize: 20),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 503,
+                width: 400,
+                padding: const EdgeInsets.only( top: 10,
+                     bottom: 15, left: 12, right: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: const Color.fromARGB(255, 213, 209, 209),
+                ),
+                child: const SingleChildScrollView(
+                  child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  
+                    children: [
+                    RecentTransactions(),
+                    SizedBox(height: 4,),
+                     RecentTransactions(),
+                    SizedBox(height: 4,),
+                     RecentTransactions(),
+                    SizedBox(height: 4,),
+                    RecentTransactions(),
+                    SizedBox(height: 4,),
+                    RecentTransactions(),
+                    SizedBox(height: 4,),
+                    RecentTransactions(),
+                    SizedBox(height: 4,),
+                    RecentTransactions(),
+                    SizedBox(height: 4,),
+                    RecentTransactions(),
+                    SizedBox(height: 4,),
+                     
+                  ],),
+                ),
               )
             ],
           ),
