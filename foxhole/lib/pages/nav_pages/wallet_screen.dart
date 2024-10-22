@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:foxhole/models/recent_transactions.dart';
+import 'package:foxhole/util/g_nav.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-
 class WalletScreen extends StatefulWidget {
-  const WalletScreen({super.key});
+  const WalletScreen({
+    super.key,
+  });
 
   @override
   State<WalletScreen> createState() {
@@ -15,8 +17,15 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   double? userBalance;
+  double? transactionAmount;
 
-  void computeBalance() {}
+  void computeBalance() {} //will be used to populate transactions
+
+  List transactions = [
+    ["Netflix", "October 15th", "\$15"],
+    ["HBO", "October 16th", "\$4.99"],
+    ["Hulu", "October 17", "\$7.99"],
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +49,25 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Wallet",
-                        style: GoogleFonts.playfairDisplay(
-                            fontSize: 28, fontWeight: FontWeight.bold),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 140, right: 100),
+                        child: Text(
+                          "Wallet",
+                          style: GoogleFonts.playfairDisplay(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
                       ),
+
+                      Container(
+                        width: 35,
+                        height: 35,
+                      
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                            color: const Color.fromARGB(255, 217, 217, 217),
+                        ),
+                        child: const Icon(Icons.add),
+                      )
                     ],
                   ),
                 ),
@@ -100,7 +123,8 @@ class _WalletScreenState extends State<WalletScreen> {
                             style: GoogleFonts.lato(color: Colors.white),
                           ),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255,2, 48, 71),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 2, 48, 71),
                               minimumSize: Size(170, 50)),
                         ),
                       ],
@@ -123,35 +147,67 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
               Expanded(
                 child: Container(
-                 
-                  padding: const EdgeInsets.only( top: 10,
-                       left: 8, right: 8),
+                  padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.black,
+                    color: Colors.transparent,
                   ),
                   child: const SingleChildScrollView(
-                    child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                      RecentTransactions(),
-                      SizedBox(height: 4,),
-                       RecentTransactions(),
-                      SizedBox(height: 4,),
-                       RecentTransactions(),
-                      SizedBox(height: 4,),
-                      RecentTransactions(),
-                      SizedBox(height: 4,),
-                      RecentTransactions(),
-                      SizedBox(height: 4,),
-                      RecentTransactions(),
-                      SizedBox(height: 4,),
-                      RecentTransactions(),
-                      SizedBox(height: 4,),
-                      RecentTransactions(),
-                      SizedBox(height: 4,),
-                       
-                    ],),
+                       RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),RecentTransactionTiles(
+                          companyName: "Netflix",
+                          transactionStatus: "Completed",
+                          transactionAmount: 22,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -170,34 +226,7 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: GNav(
-              gap: 8,
-              onTabChange: (index) {
-                print(index);
-              },
-              backgroundColor: Colors.black,
-              color: Colors.white,
-              activeColor: Colors.white,
-              tabBackgroundColor: Colors.grey.shade800,
-              padding: const EdgeInsets.all(16),
-              tabs: const [
-                GButton(
-                  icon: Icons.home,
-                  text: "Home",
-                ),
-                GButton(
-                  icon: Icons.wallet,
-                  text: "Wallet",
-                ),
-                GButton(
-                  icon: Icons.search,
-                  text: "Search",
-                ),
-                GButton(
-                  icon: Icons.settings,
-                  text: "Settings",
-                ),
-              ]),
+          child: CustomGNav(),
         ),
       ),
     );

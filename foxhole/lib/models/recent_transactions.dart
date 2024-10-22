@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RecentTransactions extends StatelessWidget {
-  const RecentTransactions({super.key});
+class RecentTransactionTiles extends StatelessWidget {
+
+
+ final String companyName;
+  final String transactionStatus;
+  final double transactionAmount;
+
+  const RecentTransactionTiles ({super.key, required this.companyName,
+      required this.transactionStatus,
+      required this.transactionAmount});
 
   @override
   Widget build(context) {
@@ -34,12 +42,12 @@ class RecentTransactions extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Organization",
+                  companyName,
                   style: GoogleFonts.lato(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900),
                 ),
                      
                 Text(
-                  "transaction status",
+                  transactionStatus,
                   style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
                 ),
               ],
@@ -47,7 +55,7 @@ class RecentTransactions extends StatelessWidget {
           ),
           SizedBox(width: 165,),
           Text(
-            "\$30",
+            "\$$transactionAmount",
             style: GoogleFonts.lato(color: Colors.white, fontSize: 12),
           ),
         ],
