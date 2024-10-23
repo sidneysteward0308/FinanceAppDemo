@@ -40,7 +40,7 @@ dependencies:
   google_fonts: ^6.2.1
   google_nav_bar: ^5.0.6
   pie_chart: ^5.4.0
-  fl_chart: ^0.40.0
+  fl_chart: 0.36.3
   sqflite: ^2.4.0
   path: ^1.9.0
  
@@ -74,7 +74,7 @@ flutter:
     - assets/images/avatar.png
     - assets/images/income.png
     - assets/images/expenses.png
-    - assets/images/payments.png
+    - assets/images/savings.png
     - assets/images/investments.png
 
 

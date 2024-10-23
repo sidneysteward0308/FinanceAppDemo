@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:foxhole/util/g_nav.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class CardsScreen extends StatelessWidget {
+  const CardsScreen({super.key});
 
-  @override
+ @override
   Widget build(context) {
     return const Scaffold(
       
@@ -12,7 +12,7 @@ class SettingsScreen extends StatelessWidget {
         alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [ Text("Settings Screen")],
+          children: [ Text("Cards Screen")],
         ),
       ),
 

@@ -13,17 +13,8 @@ class ExpensesScreen extends StatefulWidget {
 class _ExpensesScreenState extends State<ExpensesScreen> {
   @override
   Widget build(context) {
-     return Scaffold(
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.black,
-        ),
-        child: const Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: CustomGNav(),
-        ),
-      ),
+     return const Scaffold(
+      bottomNavigationBar: CustomGNav()
      );
   }
 }

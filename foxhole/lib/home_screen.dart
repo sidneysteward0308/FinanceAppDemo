@@ -74,18 +74,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
               //PIE CHART PADDING
               Padding(
-  padding: const EdgeInsets.only(top: 10, bottom: 5),
-  child: Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(50), // Same rounded corner here
-    ),
-    height: 355,
-    width: 400,
-    child: const CustomPieChartWidget(),
-  ),
-),
-
+                padding: const EdgeInsets.only(top: 10, bottom: 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius.circular(50), // Same rounded corner here
+                  ),
+                  height: 355,
+                  width: 400,
+                  child: const CustomPieChartWidget(),
+                ),
+              ),
 
               //PAGE NAVIGATION PADDING
               Padding(
@@ -177,13 +177,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           //Payments
                           InkWell(
-                             onTap: () {
+                            onTap: () {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
                                   pageBuilder: (context, animation,
                                           secondaryAnimation) =>
-                                      PaymentsScreen(),
+                                      SavingsScreen(),
                                   transitionDuration:
                                       Duration.zero, // No transition
                                   reverseTransitionDuration:
@@ -194,8 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: CategoryContainer(
                               categoryAmount: 447.84,
                               categoryPercent: 84,
-                              categoryName: "Payments",
-                              categoryImagePath: "assets/images/payments.png",
+                              categoryName: "Savings",
+                              categoryImagePath: "assets/images/savings.png",
                             ),
                           ),
                           const SizedBox(
@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           //Investments
                           InkWell(
-                             onTap: () {
+                            onTap: () {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
@@ -221,7 +221,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               categoryAmount: 447.84,
                               categoryPercent: 84,
                               categoryName: "Investments",
-                              categoryImagePath: "assets/images/investments.png",
+                              categoryImagePath:
+                                  "assets/images/investments.png",
                             ),
                           ),
                         ],
@@ -234,16 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.black,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: CustomGNav(),
-        ),
-      ),
+      bottomNavigationBar: const CustomGNav(),
     );
   }
 }

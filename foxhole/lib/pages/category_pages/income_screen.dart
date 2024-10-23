@@ -27,16 +27,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.black,
-        ),
-        child: const Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: CustomGNav(),
-        ),
-      ),
+      bottomNavigationBar:const CustomGNav(),
     );
   }
 }

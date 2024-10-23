@@ -14,17 +14,8 @@ class _InvestmentsScreenState extends State<InvestmentsScreen > {
   @override
   Widget build(context) {
   
-    return Scaffold(
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.black,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: CustomGNav(),
-        ),
-      ),
+    return const Scaffold(
+      bottomNavigationBar:  CustomGNav(),
     );
   }
 }
