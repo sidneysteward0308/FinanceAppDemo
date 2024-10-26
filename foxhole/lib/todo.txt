@@ -1,0 +1,14 @@
+1. Make the pie chart functional and have it reflect the user's actual data
+2. optional: Make the stokes of the pie chart clickable so that it displays 
+    the category/amount it represents
+3. Build the settings screen.
+4. Build the income, Expenses, Savings, and Investments screen.
+5. On wallet screen fix the balance udate after a widthdrawl
+6. On wallet screen fix the padding and style of the recent transaction tiles
+7. Build wallet screen
+8. Build the settings screen
+9. optional: Build notifications screen (unimportant, save till the end)
+10. On the home screen the category tiles should reflect and increase/decrease in state,
+    meaning if income increase, a percentage calculation of the increase should show, and
+    vise versa.
+11.

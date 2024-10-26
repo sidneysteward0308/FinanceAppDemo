@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foxhole/pages/login_logout/createaccount_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:foxhole/database/Sqflite_database.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,40 +13,48 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-//variables to be used in later logic behind storing customer info
+  // Controllers for user input
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
 
   String userEmail = "";
   String userPassword = "";
 
-  //check box
+
   bool isChecked = false;
 
-//style variables, will later moved into a style class
+  // Style variables
   double spacingHeight = 10;
-
   Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
-
   late Color checkBoxColor;
 
+  // Method to get checkbox color based on state
   Color getColor(Set<WidgetState> states) {
     const Set<WidgetState> interactiveStates = <WidgetState>{
       WidgetState.pressed,
       WidgetState.hovered,
       WidgetState.focused,
     };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
+    checkBoxColor = isChecked ? mainAccentColor : Colors.white;
+    return states.any(interactiveStates.contains) ? Colors.blue : checkBoxColor;
+  }
 
-    if (!isChecked) {
-      checkBoxColor = Colors.white;
+  
+  Future<void> _login() async {
+    userEmail = userEmailController.text.trim();
+    userPassword = userPasswordController.text.trim();
+
+    if (userEmail.isNotEmpty && userPassword.isNotEmpty) {
+      var user = await SqfliteDatabase.instance.getUser(userEmail, userPassword);
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login successful!')));
+        Navigator.pushNamed(context, '/home'); 
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid email or password.')));
+      }
     } else {
-      checkBoxColor = mainAccentColor;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter your credentials.')));
     }
-
-    return checkBoxColor;
   }
 
   @override
@@ -61,13 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.only(top: 220),
                 child: Text(
                   "Login",
-                  style: GoogleFonts.playfairDisplay(
-                      color: Colors.black, fontSize: 48),
+                  style: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 48),
                 ),
               ),
-              SizedBox(
-                height: spacingHeight,
-              ),
+              SizedBox(height: spacingHeight),
               TextField(
                 controller: userEmailController,
                 decoration: InputDecoration(
@@ -75,27 +82,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   hintText: 'Email',
-                  hintStyle: GoogleFonts.playfairDisplay(
-                      color: Colors.black, fontSize: 16),
+                  hintStyle: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 16),
                 ),
               ),
-              SizedBox(
-                height: spacingHeight,
-              ),
+              SizedBox(height: spacingHeight),
               TextField(
                 controller: userPasswordController,
+                obscureText: true,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   hintText: 'Password',
-                  hintStyle: GoogleFonts.playfairDisplay(
-                      color: Colors.black, fontSize: 16),
+                  hintStyle: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 16),
                 ),
               ),
-              SizedBox(
-                height: spacingHeight,
-              ),
+              SizedBox(height: spacingHeight),
               Row(
                 children: [
                   Checkbox(
@@ -111,54 +113,37 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Remember Me"),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               SizedBox(
                 width: 250,
                 height: 50,
                 child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        userEmail = userEmailController.text;
-                        userPassword = userPasswordController.text;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: mainAccentColor,
-                    ),
-                    child: Text(
-                      "Sign Up",
-                      style: GoogleFonts.playfairDisplay(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
-                    )),
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mainAccentColor,
+                  ),
+                  child: Text(
+                    "Login",
+                    style: GoogleFonts.playfairDisplay(
+                        color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                ),
               ),
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
               const Row(
                 children: [
                   Expanded(
-                    child: Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                    ),
+                    child: Divider(color: Colors.grey, thickness: 1),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
                       'Or Login With',
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 137, 136, 136)),
+                      style: TextStyle(color: Color.fromARGB(255, 137, 136, 136)),
                     ),
                   ),
                   Expanded(
-                    child: Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                    ),
+                    child: Divider(color: Colors.grey, thickness: 1),
                   ),
                 ],
               ),
@@ -166,12 +151,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, 
-                  backgroundColor: Colors.white, 
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0), 
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0), 
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
                 child: Row(
@@ -180,29 +164,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Image.asset(
                       'assets/images/google_logo.png',
-                      height: 24.0, 
+                      height: 24.0,
                     ),
-
-                    const SizedBox(
-                        width: 10.0), // Add space between the logo and text
-
-                    const Text(
-                      "Login with Google",
-                      style: TextStyle(fontSize: 16.0),
-                    ),
+                    const SizedBox(width: 10.0),
+                    const Text("Login with Google", style: TextStyle(fontSize: 16.0)),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, 
-                  backgroundColor: Colors.white, 
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0), 
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -213,32 +188,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Image.asset(
                       'assets/images/apple_logo.png',
-                      height: 24.0, 
+                      height: 24.0,
                     ),
-
-                    const SizedBox(
-                        width: 10.0), 
-                    const Text(
-                      "Login with Apple",
-                      style: TextStyle(fontSize: 16.0),
-                    ),
+                    const SizedBox(width: 10.0),
+                    const Text("Login with Apple", style: TextStyle(fontSize: 16.0)),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 25),
                 child: Column(
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    CreateaccountScreen(),
+                transitionDuration: Duration.zero, // No transition
+                reverseTransitionDuration:
+                    Duration.zero, // No reverse transition
+              ),
+            );},
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
-                        minimumSize: const Size(
-                            0, 0), 
+                        minimumSize: const Size(0, 0),
                       ),
                       child: const Text("Create Account"),
                     ),

@@ -1,43 +1,137 @@
 import 'package:flutter/material.dart';
-import 'package:foxhole/models/recent_transactions.dart';
+import 'package:foxhole/database/Sqflite_database.dart';
+
+
+import 'package:foxhole/util/dialog_box.dart';
 import 'package:foxhole/util/g_nav.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+
+import 'package:intl/intl.dart';
 
 class WalletScreen extends StatefulWidget {
+  final Function(double) onIncomeUpdated;
+  final Function(double) onExpensesUpdated;
+  final double currentIncome;
+  final double currentExpenses;
+
   const WalletScreen({
-    super.key,
-  });
+    Key? key,
+    required this.onIncomeUpdated,
+    required this.onExpensesUpdated,
+    required this.currentIncome,
+    required this.currentExpenses,
+  }) : super(key: key);
 
   @override
-  State<WalletScreen> createState() {
-    return _WalletScreenState();
-  }
+  State<WalletScreen> createState() => _WalletScreenState();
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  double? userBalance;
-  double? transactionAmount;
+  final TextEditingController depositController = TextEditingController();
+  final TextEditingController withdrawController = TextEditingController();
 
-  void computeBalance() {} //will be used to populate transactions
+  var now = DateTime.now();
+  var formatter = DateFormat('MM-dd-yyyy');
+  late String formattedDate;
+  double? userBalance = 0;
+  List<Map<String, dynamic>> transactions = [];
 
-  List transactions = [
-    ["Netflix", "October 15th", "\$15"],
-    ["HBO", "October 16th", "\$4.99"],
-    ["Hulu", "October 17", "\$7.99"],
-  ];
+  @override
+  void initState() {
+    super.initState();
+    formattedDate = formatter.format(now);
+    _loadTransactions();
+  }
 
+Future<void> _loadTransactions() async {
+  List<Map<String, dynamic>> allTransactions = await SqfliteDatabase.instance.getTransactions();
+  setState(() {
+    transactions = List.from(allTransactions); // Create a modifiable copy
+    userBalance = transactions.fold<double>(0.0, (double sum, transaction) {
+      double amount = (transaction['amount'] ?? 0.0).toDouble(); // Ensures a double value
+      return transaction['type'] == 'deposit'
+          ? (sum) + amount
+          : (sum) - amount;
+    });
+  });
+}
+
+
+
+  void createDeposit() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogBox(
+          controller: depositController,
+          onSave: makeDeposit,
+          onCancel: () => Navigator.of(context).pop(),
+          specifyTask: "Enter Deposit Amount",
+          currentDate: formattedDate,
+        );
+      },
+    );
+  }
+
+  void makeDeposit() async {
+    double depositAmount = double.tryParse(depositController.text) ?? 0.0;
+    await SqfliteDatabase.instance.createTransaction(depositAmount, 'deposit', DateTime.now().toString());
+    
+    setState(() {
+      widget.onIncomeUpdated(widget.currentIncome + depositAmount);
+      userBalance = (userBalance ?? 0) + depositAmount;
+      depositController.clear();
+      transactions.add({
+        "type": "Deposit",
+        "amount": depositAmount,
+        "date": formattedDate,
+      });
+    });
+    Navigator.of(context).pop();
+  }
+
+  void createWithdraw() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogBox(
+          controller: withdrawController,
+          onSave: makeWithdraw,
+          onCancel: () => Navigator.of(context).pop(),
+          specifyTask: "Enter Withdraw Amount",
+          currentDate: formattedDate,
+        );
+      },
+    );
+  }
+
+ void makeWithdraw() async {
+  double withdrawAmount = double.tryParse(withdrawController.text) ?? 0.0;
+  await SqfliteDatabase.instance.createTransaction(withdrawAmount, 'withdrawal', DateTime.now().toString());
+
+  setState(() {
+    widget.onExpensesUpdated(widget.currentExpenses + withdrawAmount);
+    userBalance = (userBalance ?? 0) - withdrawAmount;
+    withdrawController.clear();
+
+    transactions = List.from(transactions)..add({
+      "type": "Withdraw",
+      "amount": withdrawAmount,
+      "date": formattedDate,
+    });
+  });
+  Navigator.of(context).pop(); 
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Align(
         child: Container(
-          padding:
-              const EdgeInsets.only(top: 70, bottom: 15, left: 15, right: 15),
+          padding: const EdgeInsets.only(top: 70, bottom: 15, left: 15, right: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // Wallet Header
               Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -53,31 +147,19 @@ class _WalletScreenState extends State<WalletScreen> {
                         padding: const EdgeInsets.only(left: 140, right: 100),
                         child: Text(
                           "Wallet",
-                          style: GoogleFonts.playfairDisplay(
-                              fontSize: 28, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                         ),
                       ),
-
-                      Container(
-                        width: 35,
-                        height: 35,
-                      
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                            color: const Color.fromARGB(255, 217, 217, 217),
-                        ),
-                        child: const Icon(Icons.add),
-                      )
                     ],
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 4,
-              ),
+              
+              const SizedBox(height: 4),
+
+              // Current Balance Section
               Container(
-                padding:
-                    EdgeInsets.only(top: 16.0, bottom: 16, left: 20, right: 16),
+                padding: const EdgeInsets.only(top: 16.0, bottom: 16, left: 20, right: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
@@ -87,148 +169,73 @@ class _WalletScreenState extends State<WalletScreen> {
                   children: [
                     const Text("Current Balance"),
                     Text(
-                      "\$10,0000",
-                      style:
-                          GoogleFonts.lato(fontSize: 40, color: Colors.black),
+                      "\$$userBalance",
+                      style: const TextStyle(fontSize: 40, color: Colors.black),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.arrow_downward,
-                            color: Colors.black,
-                          ),
-                          label: Text(
-                            'Deposit',
-                            style: GoogleFonts.lato(color: Colors.black),
-                          ),
+                          onPressed: createDeposit,
+                          icon: const Icon(Icons.arrow_downward, color: Colors.black),
+                          label: const Text('Deposit', style: TextStyle(color: Colors.black)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            minimumSize: Size(170, 50),
+                            backgroundColor: const Color.fromARGB(255, 244, 243, 243),
+                            minimumSize: const Size(170, 50),
                           ),
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        const SizedBox(width: 8),
                         ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.arrow_outward,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            'Widthdraw',
-                            style: GoogleFonts.lato(color: Colors.white),
-                          ),
+                          onPressed: createWithdraw,
+                          icon: const Icon(Icons.arrow_outward, color: Colors.white),
+                          label: const Text('Withdraw', style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 2, 48, 71),
-                              minimumSize: Size(170, 50)),
+                            backgroundColor: const Color.fromARGB(255, 2, 48, 71),
+                            minimumSize: const Size(170, 50),
+                          ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 22,
-              ),
+              
+              const SizedBox(height: 22),
+
+              // Recent Transactions Section
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
+                child: const Text(
                   "Recent Transactions",
-                  style: GoogleFonts.lato(color: Colors.black, fontSize: 20),
+                  style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
+                  padding: const EdgeInsets.only(left: 8, right: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.transparent,
                   ),
-                  child: const SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                       RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),RecentTransactionTiles(
-                          companyName: "Netflix",
-                          transactionStatus: "Completed",
-                          transactionAmount: 22,
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                      ],
-                    ),
+                  child: ListView.builder(
+                    itemCount: transactions.length,
+                    itemBuilder: (context, index) {
+                      final transaction = transactions[index];
+                      return ListTile(
+                        title: Text(transaction["type"]),
+                        subtitle: Text(transaction["date"]),
+                        trailing: Text("\$${transaction["amount"]}"),
+                      );
+                    },
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
-
-      /*make a class that has the Gnav bar and call it from all other classes,
-      changes will only need to be made in one place.  Figure out is there is a better way
-      to have the nav bar appear throughout the app*/
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.black,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-          child: CustomGNav(),
-        ),
-      ),
+      bottomNavigationBar: const CustomGNav(),
     );
   }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:foxhole/database/Sqflite_database.dart';
 import 'package:foxhole/models/category_container.dart';
 import 'package:foxhole/pages/category_pages/expenses_screen.dart';
 import 'package:foxhole/pages/category_pages/income_screen.dart';
 import 'package:foxhole/pages/category_pages/investments_screen.dart';
-import 'package:foxhole/pages/category_pages/payments_screen.dart';
-import 'package:foxhole/pages/nav_pages/wallet_screen.dart';
+import 'package:foxhole/pages/category_pages/savings_screen.dart';
 import 'package:foxhole/util/g_nav.dart';
 import 'package:foxhole/util/pie_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,19 +19,59 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  double income = 0;
+  double expenses = 0;
+  double savings = 5; // Dummy value for now. Koi use this to update the container on the HS
+  double investments = 5; // Dummy value for now. Koi use this to update the container on the HS
+  double other = 2; // Dummy value for now
+
+  final TextEditingController depositController = TextEditingController();
+  final TextEditingController withdrawController = TextEditingController();
+
   @override
-  Widget build(context) {
+  void initState() {
+    super.initState();
+    _loadTransactions();
+  }
+
+  Future<void> _loadTransactions() async {
+    List<Map<String, dynamic>> transactions = await SqfliteDatabase.instance.getTransactions();
+    setState(() {
+      income = transactions.where((t) => t['type'] == 'deposit').fold(0, (sum, item) => sum + item['amount']);
+      expenses = transactions.where((t) => t['type'] == 'withdrawal').fold(0, (sum, item) => sum + item['amount']);
+    });
+  }
+
+  void makeDeposit() async {
+    double depositAmount = double.tryParse(depositController.text) ?? 0.0;
+    await SqfliteDatabase.instance.createTransaction(depositAmount, 'deposit', DateTime.now().toString());
+    setState(() {
+      income += depositAmount;
+      depositController.clear();
+    });
+    Navigator.of(context).pop();
+  }
+
+  void makeWithdraw() async {
+    double withdrawAmount = double.tryParse(withdrawController.text) ?? 0.0;
+    await SqfliteDatabase.instance.createTransaction(withdrawAmount, 'withdrawal', DateTime.now().toString());
+    setState(() {
+      expenses += withdrawAmount;
+      withdrawController.clear();
+    });
+    Navigator.of(context).pop(); 
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 236, 234, 234),
       body: Align(
         child: Container(
-          padding:
-              const EdgeInsets.only(top: 20, bottom: 15, left: 15, right: 15),
+          padding: const EdgeInsets.only(top: 20, bottom: 15, left: 15, right: 15),
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
               Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -42,52 +81,54 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.only(top: 0),
                   child: Row(
                     children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Container(
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                            image: const DecorationImage(
-                              image: AssetImage("assets/images/avatar.png"),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(20)),
+                          image: const DecorationImage(
+                            image: AssetImage("assets/images/avatar.png"),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Text(
                         "User's Name",
                         style: GoogleFonts.playfairDisplay(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const SizedBox(
-                        width: 190,
-                      ),
+                      const SizedBox(width: 190),
                       const Icon(Icons.notifications_outlined),
                     ],
                   ),
                 ),
               ),
 
-              //PIE CHART PADDING
+              // PIE CHART PADDING
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 5),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.circular(50), // Same rounded corner here
+                    borderRadius: BorderRadius.circular(50),
                   ),
                   height: 355,
                   width: 400,
-                  child: const CustomPieChartWidget(),
+                  child: CustomPieChartWidget(
+                    income: income,
+                    expenses: expenses,
+                    savings: savings,
+                    investments: investments,
+                    other: other,
+                  ),
                 ),
               ),
 
-              //PAGE NAVIGATION PADDING
+              // PAGE NAVIGATION PADDING
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 0),
                 child: Container(
@@ -102,67 +143,53 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Row(
                         children: [
-                          const SizedBox(
-                            width: 30,
-                          ),
+                          const SizedBox(width: 30),
                           Text(
                             "Categories",
                             style: GoogleFonts.roboto(
-                                fontSize: 14, fontWeight: FontWeight.w500),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
                       Row(
                         children: [
-                          const SizedBox(
-                            width: 25,
-                          ),
-
-                          //income
+                          const SizedBox(width: 25),
                           InkWell(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      IncomeScreen(),
-                                  transitionDuration:
-                                      Duration.zero, // No transition
-                                  reverseTransitionDuration:
-                                      Duration.zero, // No reverse transition
+                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                      const IncomeScreen(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             },
-                            child: CategoryContainer(
-                              categoryAmount: 447.84,
+                            child:  CategoryContainer(
+                              categoryAmount: income,
                               categoryPercent: 84,
                               categoryName: "Income",
                               categoryImagePath: "assets/images/income.png",
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-
-                          //Expenses
+                          const SizedBox(width: 10),
                           InkWell(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      ExpensesScreen(),
-                                  transitionDuration:
-                                      Duration.zero, // No transition
-                                  reverseTransitionDuration:
-                                      Duration.zero, // No reverse transition
+                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                      const ExpensesScreen(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             },
                             child: CategoryContainer(
-                              categoryAmount: 447.84,
+                              categoryAmount: expenses,
                               categoryPercent: 84,
                               categoryName: "Expenses",
                               categoryImagePath: "assets/images/expenses.png",
@@ -172,57 +199,44 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Row(
                         children: [
-                          const SizedBox(
-                            width: 25,
-                          ),
-                          //Payments
+                          const SizedBox(width: 25),
                           InkWell(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      SavingsScreen(),
-                                  transitionDuration:
-                                      Duration.zero, // No transition
-                                  reverseTransitionDuration:
-                                      Duration.zero, // No reverse transition
+                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                      const SavingsScreen(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             },
-                            child: CategoryContainer(
-                              categoryAmount: 447.84,
+                            child:  CategoryContainer(
+                              categoryAmount: savings,
                               categoryPercent: 84,
                               categoryName: "Savings",
                               categoryImagePath: "assets/images/savings.png",
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          //Investments
+                          const SizedBox(width: 10),
                           InkWell(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      InvestmentsScreen(),
-                                  transitionDuration:
-                                      Duration.zero, // No transition
-                                  reverseTransitionDuration:
-                                      Duration.zero, // No reverse transition
+                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                      const InvestmentsScreen(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             },
                             child: CategoryContainer(
-                              categoryAmount: 447.84,
+                              categoryAmount: investments,
                               categoryPercent: 84,
                               categoryName: "Investments",
-                              categoryImagePath:
-                                  "assets/images/investments.png",
+                              categoryImagePath: "assets/images/investments.png",
                             ),
                           ),
                         ],
@@ -238,4 +252,6 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: const CustomGNav(),
     );
   }
+
+  
 }
