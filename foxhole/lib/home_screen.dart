@@ -21,12 +21,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   double income = 0;
   double expenses = 0;
-  double savings = 5; // Dummy value for now. Koi use this to update the container on the HS
-  double investments = 5; // Dummy value for now. Koi use this to update the container on the HS
-  double other = 2; // Dummy value for now
+  double savings = 0; // Dummy value for now. Koi use this to update the container on the HS
+  double investments = 0; // Dummy value for now. Koi use this to update the container on the HS
+  double other = 0; // Dummy value for now
 
   final TextEditingController depositController = TextEditingController();
   final TextEditingController withdrawController = TextEditingController();
+  final TextEditingController savingsController = TextEditingController();
+  final TextEditingController investmentController = TextEditingController();
 
   @override
   void initState() {
@@ -39,6 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       income = transactions.where((t) => t['type'] == 'deposit').fold(0, (sum, item) => sum + item['amount']);
       expenses = transactions.where((t) => t['type'] == 'withdrawal').fold(0, (sum, item) => sum + item['amount']);
+      savings = transactions.where((t) => t['type'] == 'savings').fold(0, (sum, item) => sum + item['amount']);
+      investments = transactions.where((t) => t['type'] == 'investment').fold(0, (sum, item) => sum + item['amount']);
     });
   }
 
@@ -58,6 +62,26 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       expenses += withdrawAmount;
       withdrawController.clear();
+    });
+    Navigator.of(context).pop(); 
+  }
+
+  void addSavings() async {
+    double savingsAmount = double.tryParse(savingsController.text) ?? 0.0;
+    await SqfliteDatabase.instance.createTransaction(savingsAmount, 'moved to savings', DateTime.now().toString());
+    setState(() {
+      savings += savingsAmount;
+      savingsController.clear();
+    });
+    Navigator.of(context).pop(); 
+  }
+
+  void makeInvestment() async {
+    double investmentAmount = double.tryParse(investmentController.text) ?? 0.0;
+    await SqfliteDatabase.instance.createTransaction(investmentAmount, 'invest', DateTime.now().toString());
+    setState(() {
+      expenses += investmentAmount;
+      investmentController.clear();
     });
     Navigator.of(context).pop(); 
   }
@@ -136,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  height: 315,
+                  height: 280,
                   width: 400,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
