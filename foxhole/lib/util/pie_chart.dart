@@ -76,9 +76,9 @@ class _CustomPieChartWidgetState extends State<CustomPieChartWidget> {
       case 'Expenses':
         return const Color.fromRGBO(2, 48, 71, 1);
       case 'Savings':
-        return const Color.fromRGBO(255, 183, 3, 1);
+        return const Color.fromARGB(255, 255, 137, 3);
       case 'Investments':
-        return const Color.fromRGBO(251, 133, 0, 1);
+        return const Color.fromARGB(255, 29, 87, 37);
       case 'Other':
         return const Color.fromRGBO(142, 202, 230, 1);
       default:
