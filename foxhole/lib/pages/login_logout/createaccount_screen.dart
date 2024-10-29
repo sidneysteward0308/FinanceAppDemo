@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foxhole/home_screen.dart';
+import 'package:foxhole/pages/login_logout/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:foxhole/database/Sqflite_database.dart';
 
@@ -13,6 +15,7 @@ class CreateaccountScreen extends StatefulWidget {
 
 class _CreateaccountScreenState extends State<CreateaccountScreen> {
   // Controllers for user input
+   TextEditingController userNameController = TextEditingController();
   TextEditingController userEmailController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
   TextEditingController confirmedPasswordController = TextEditingController();
@@ -24,7 +27,7 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
   // Checkbox
   bool isChecked = false;
 
-  // Style variables
+  // Style variables, should move this to a theme class
   double spacingHeight = 10;
   Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
   late Color checkBoxColor;
@@ -51,15 +54,27 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
     confirmedPassword = confirmedPasswordController.text.trim();
 
     if (userPassword == confirmedPassword && userEmail.isNotEmpty) {
-      int userId = await SqfliteDatabase.instance.createUser(userEmail, userPassword);
+      int userId =
+          await SqfliteDatabase.instance.createUser(userEmail, userPassword);
       if (userId > 0) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Account created successfully!')));
-        Navigator.pop(context); 
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Account created successfully!')));
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const HomeScreen(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Account creation failed. Try again.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text('Account creation failed. Try again.')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Passwords do not match or fields are empty.')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Passwords do not match or fields are empty.')));
     }
   }
 
@@ -77,10 +92,12 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                 padding: const EdgeInsets.only(top: 220),
                 child: Text(
                   "Let's get started",
-                  style: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 48),
+                  style: GoogleFonts.playfairDisplay(
+                      color: Colors.black, fontSize: 48),
                 ),
               ),
               SizedBox(height: spacingHeight),
+             
               TextField(
                 controller: userEmailController,
                 decoration: InputDecoration(
@@ -88,7 +105,8 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   hintText: 'Email',
-                  hintStyle: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 16),
+                  hintStyle: GoogleFonts.playfairDisplay(
+                      color: Colors.black, fontSize: 16),
                 ),
               ),
               SizedBox(height: spacingHeight),
@@ -100,7 +118,8 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   hintText: 'Password',
-                  hintStyle: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 16),
+                  hintStyle: GoogleFonts.playfairDisplay(
+                      color: Colors.black, fontSize: 16),
                 ),
               ),
               SizedBox(height: spacingHeight),
@@ -112,7 +131,8 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   hintText: 'Confirm Password',
-                  hintStyle: GoogleFonts.playfairDisplay(color: Colors.black, fontSize: 16),
+                  hintStyle: GoogleFonts.playfairDisplay(
+                      color: Colors.black, fontSize: 16),
                 ),
               ),
               Row(
@@ -142,7 +162,9 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                     child: Text(
                       "Sign Up",
                       style: GoogleFonts.playfairDisplay(
-                          color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700),
                     )),
               ),
               const SizedBox(height: 50),
@@ -155,7 +177,8 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
                       'Or Sign Up with',
-                      style: TextStyle(color: Color.fromARGB(255, 137, 136, 136)),
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 137, 136, 136)),
                     ),
                   ),
                   Expanded(
@@ -167,12 +190,12 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, 
-                  backgroundColor: Colors.white, 
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 16.0), 
+                      vertical: 12.0, horizontal: 16.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0), 
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
                 child: Row(
@@ -180,11 +203,12 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/google_logo.png', 
-                      height: 24.0, 
+                      'assets/images/google_logo.png',
+                      height: 24.0,
                     ),
                     const SizedBox(width: 10.0),
-                    const Text("Sign up with Google", style: TextStyle(fontSize: 16.0)),
+                    const Text("Sign up with Google",
+                        style: TextStyle(fontSize: 16.0)),
                   ],
                 ),
               ),
@@ -192,12 +216,12 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, 
-                  backgroundColor: Colors.white, 
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                       vertical: 12.0, horizontal: 16.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0), 
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
                 child: Row(
@@ -205,11 +229,12 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/apple_logo.png', 
-                      height: 24.0, 
+                      'assets/images/apple_logo.png',
+                      height: 24.0,
                     ),
                     const SizedBox(width: 10.0),
-                    const Text("Sign up with Apple", style: TextStyle(fontSize: 16.0)),
+                    const Text("Sign up with Apple",
+                        style: TextStyle(fontSize: 16.0)),
                   ],
                 ),
               ),
@@ -221,9 +246,18 @@ class _CreateaccountScreenState extends State<CreateaccountScreen> {
                   children: [
                     const Text("Already have an account?"),
                     TextButton(
-                      onPressed: () {},
+                       onPressed: () {Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    LoginScreen(),
+                transitionDuration: Duration.zero, // No transition
+                reverseTransitionDuration:
+                    Duration.zero, // No reverse transition
+              ),
+            );},
                       style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero, 
+                        padding: EdgeInsets.zero,
                         minimumSize: const Size(0, 0),
                       ),
                       child: const Text("Login"),

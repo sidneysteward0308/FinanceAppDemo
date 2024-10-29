@@ -21,9 +21,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   double income = 0;
   double expenses = 0;
-  double savings = 0; // Dummy value for now. Koi use this to update the container on the HS
-  double investments = 0; // Dummy value for now. Koi use this to update the container on the HS
-  double other = 0; // Dummy value for now
+  double savings = 0;
+  double investments = 0;
 
   final TextEditingController depositController = TextEditingController();
   final TextEditingController withdrawController = TextEditingController();
@@ -37,18 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadTransactions() async {
-    List<Map<String, dynamic>> transactions = await SqfliteDatabase.instance.getTransactions();
+    List<Map<String, dynamic>> transactions =
+        await SqfliteDatabase.instance.getTransactions();
     setState(() {
-      income = transactions.where((t) => t['type'] == 'deposit').fold(0, (sum, item) => sum + item['amount']);
-      expenses = transactions.where((t) => t['type'] == 'withdrawal').fold(0, (sum, item) => sum + item['amount']);
-      savings = transactions.where((t) => t['type'] == 'savings').fold(0, (sum, item) => sum + item['amount']);
-      investments = transactions.where((t) => t['type'] == 'investment').fold(0, (sum, item) => sum + item['amount']);
+      income = transactions
+          .where((t) => t['type'] == 'deposit')
+          .fold(0, (sum, item) => sum + item['amount']);
+      expenses = transactions
+          .where((t) => t['type'] == 'withdrawal')
+          .fold(0, (sum, item) => sum + item['amount']);
+      savings = transactions
+          .where((t) => t['type'] == 'savings')
+          .fold(0, (sum, item) => sum + item['amount']);
+      investments = transactions
+          .where((t) => t['type'] == 'investment')
+          .fold(0, (sum, item) => sum + item['amount']);
     });
   }
 
   void makeDeposit() async {
     double depositAmount = double.tryParse(depositController.text) ?? 0.0;
-    await SqfliteDatabase.instance.createTransaction(depositAmount, 'deposit', DateTime.now().toString());
+    await SqfliteDatabase.instance
+        .createTransaction(depositAmount, 'deposit', DateTime.now().toString());
     setState(() {
       income += depositAmount;
       depositController.clear();
@@ -58,32 +67,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void makeWithdraw() async {
     double withdrawAmount = double.tryParse(withdrawController.text) ?? 0.0;
-    await SqfliteDatabase.instance.createTransaction(withdrawAmount, 'withdrawal', DateTime.now().toString());
+    await SqfliteDatabase.instance.createTransaction(
+        withdrawAmount, 'withdrawal', DateTime.now().toString());
     setState(() {
       expenses += withdrawAmount;
       withdrawController.clear();
     });
-    Navigator.of(context).pop(); 
+    Navigator.of(context).pop();
   }
 
   void addSavings() async {
     double savingsAmount = double.tryParse(savingsController.text) ?? 0.0;
-    await SqfliteDatabase.instance.createTransaction(savingsAmount, 'moved to savings', DateTime.now().toString());
+    await SqfliteDatabase.instance.createTransaction(
+        savingsAmount, 'moved to savings', DateTime.now().toString());
     setState(() {
       savings += savingsAmount;
       savingsController.clear();
     });
-    Navigator.of(context).pop(); 
+    Navigator.of(context).pop();
   }
 
   void makeInvestment() async {
     double investmentAmount = double.tryParse(investmentController.text) ?? 0.0;
-    await SqfliteDatabase.instance.createTransaction(investmentAmount, 'invest', DateTime.now().toString());
+    await SqfliteDatabase.instance.createTransaction(
+        investmentAmount, 'invest', DateTime.now().toString());
     setState(() {
       expenses += investmentAmount;
       investmentController.clear();
     });
-    Navigator.of(context).pop(); 
+    Navigator.of(context).pop();
   }
 
   @override
@@ -92,7 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color.fromARGB(255, 236, 234, 234),
       body: Align(
         child: Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 15, left: 15, right: 15),
+          padding:
+              const EdgeInsets.only(top: 20, bottom: 15, left: 15, right: 15),
           child: Column(
             children: [
               const SizedBox(height: 50),
@@ -147,7 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     expenses: expenses,
                     savings: savings,
                     investments: investments,
-                    other: other,
                   ),
                 ),
               ),
@@ -160,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  height: 280,
+                  height: 325,
                   width: 400,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -185,16 +197,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
                                       const IncomeScreen(),
                                   transitionDuration: Duration.zero,
                                   reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             },
-                            child:  CategoryContainer(
+                            child: CategoryContainer(
                               categoryAmount: income,
-                              categoryPercent: 84,
                               categoryName: "Income",
                               categoryImagePath: "assets/images/income.png",
                             ),
@@ -205,7 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
                                       const ExpensesScreen(),
                                   transitionDuration: Duration.zero,
                                   reverseTransitionDuration: Duration.zero,
@@ -214,7 +227,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: CategoryContainer(
                               categoryAmount: expenses,
-                              categoryPercent: 84,
                               categoryName: "Expenses",
                               categoryImagePath: "assets/images/expenses.png",
                             ),
@@ -229,16 +241,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
                                       const SavingsScreen(),
                                   transitionDuration: Duration.zero,
                                   reverseTransitionDuration: Duration.zero,
                                 ),
                               );
                             },
-                            child:  CategoryContainer(
+                            child: CategoryContainer(
                               categoryAmount: savings,
-                              categoryPercent: 84,
                               categoryName: "Savings",
                               categoryImagePath: "assets/images/savings.png",
                             ),
@@ -249,7 +261,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) =>
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
                                       const InvestmentsScreen(),
                                   transitionDuration: Duration.zero,
                                   reverseTransitionDuration: Duration.zero,
@@ -258,9 +271,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: CategoryContainer(
                               categoryAmount: investments,
-                              categoryPercent: 84,
                               categoryName: "Investments",
-                              categoryImagePath: "assets/images/investments.png",
+                              categoryImagePath:
+                                  "assets/images/investments.png",
                             ),
                           ),
                         ],
@@ -276,6 +289,4 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: const CustomGNav(),
     );
   }
-
-  
 }

@@ -51,6 +51,8 @@ class _SavingsScreenState extends State<SavingsScreen> {
           onCancel: () => Navigator.of(context).pop(),
           specifyTask: "Enter Savings Amount",
           currentDate: formattedDate,
+           userBalance: totalSavings,
+           institutions: [],
         );
       },
     );

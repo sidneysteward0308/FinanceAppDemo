@@ -42,19 +42,22 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   }
 
   void createInvestment() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return DialogBox(
-          controller: investmentController,
-          onSave: makeInvestment,
-          onCancel: () => Navigator.of(context).pop(),
-          specifyTask: "Enter Investment Amount",
-          currentDate: formattedDate,
-        );
-      },
-    );
-  }
+  showDialog(
+    context: context,
+    builder: (context) {
+      return DialogBox(
+        controller: investmentController,
+        onSave: makeInvestment,
+        onCancel: () => Navigator.of(context).pop(),
+        specifyTask: "Enter Investment Amount",
+        currentDate: formattedDate,
+        userBalance: totalInvestment,
+        institutions: [],
+      );
+    },
+  );
+}
+
 
   void makeInvestment() async {
     double investmentAmount = double.tryParse(investmentController.text) ?? 0.0;

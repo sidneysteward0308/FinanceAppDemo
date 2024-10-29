@@ -46,10 +46,20 @@ class SqfliteDatabase {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       accountNumber TEXT NOT NULL,
+      routingNumber TEXT NOT NULL,
       type TEXT NOT NULL
     )
     ''');
   }
+
+   //checks for if account is already in db
+  Future<bool> checkAccountExists(String email) async {
+    final db = await instance.database;
+    final result =
+        await db.query('user', where: 'username = ?', whereArgs: [email]);
+    return result.isNotEmpty;
+  }
+
 
   // CRUD Operations for User
   Future<int> createUser(String username, String password) async {
@@ -77,11 +87,16 @@ class SqfliteDatabase {
   }
 
   // CRUD Operations for Institutions
-  Future<int> addInstitution(String name, String accountNumber, String type) async {
-    final db = await instance.database;
-    final id = await db.insert('institutions', {'name': name, 'accountNumber': accountNumber, 'type': type});
-    return id;
-  }
+  Future<int> addInstitution(String name, String accountNumber, String routingNumber, String type) async {
+  final db = await instance.database;
+  final id = await db.insert('institutions', {
+    'name': name,
+    'accountNumber': accountNumber,
+    'routingNumber': routingNumber,
+    'type': type,
+  });
+  return id;
+}
 
   Future<List<Map<String, dynamic>>> getInstitutions() async {
     final db = await instance.database;

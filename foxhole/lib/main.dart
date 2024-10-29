@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:foxhole/home_screen.dart';
 import 'package:foxhole/pages/login_logout/createaccount_screen.dart';
 import 'package:foxhole/pages/login_logout/login_screen.dart';
-import 'package:foxhole/database/Sqflite_database.dart';
 
 void main() {
   runApp(const FoxholeApp());
@@ -14,6 +14,7 @@ class FoxholeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/': (context) => FutureBuilder(
@@ -36,7 +37,7 @@ class FoxholeApp extends StatelessWidget {
   }
 
   Future<bool> _checkUserLoggedIn() async {
-    var user = await SqfliteDatabase.instance.getUser("testUsername", "testPassword");
-    return user != null;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
   }
 }

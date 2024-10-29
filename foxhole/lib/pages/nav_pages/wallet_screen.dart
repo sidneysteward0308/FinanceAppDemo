@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foxhole/database/Sqflite_database.dart';
-
-
 import 'package:foxhole/util/dialog_box.dart';
 import 'package:foxhole/util/g_nav.dart';
-
 import 'package:intl/intl.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -34,28 +31,34 @@ class _WalletScreenState extends State<WalletScreen> {
   late String formattedDate;
   double? userBalance = 0;
   List<Map<String, dynamic>> transactions = [];
+   List<String> institutions = []; 
+
 
   @override
   void initState() {
     super.initState();
     formattedDate = formatter.format(now);
     _loadTransactions();
+    _loadInstitutions(); 
   }
 
-Future<void> _loadTransactions() async {
-  List<Map<String, dynamic>> allTransactions = await SqfliteDatabase.instance.getTransactions();
-  setState(() {
-    transactions = List.from(allTransactions); // Create a modifiable copy
-    userBalance = transactions.fold<double>(0.0, (double sum, transaction) {
-      double amount = (transaction['amount'] ?? 0.0).toDouble(); // Ensures a double value
-      return transaction['type'] == 'deposit'
-          ? (sum) + amount
-          : (sum) - amount;
+  Future<void> _loadTransactions() async {
+    List<Map<String, dynamic>> allTransactions = await SqfliteDatabase.instance.getTransactions();
+    setState(() {
+      transactions = List.from(allTransactions);
+      userBalance = transactions.fold<double>(0.0, (double sum, transaction) {
+        double amount = (transaction['amount'] ?? 0.0).toDouble();
+        return transaction['type'] == 'deposit' ? sum + amount : sum - amount;
+      });
     });
-  });
-}
+  }
 
-
+  Future<void> _loadInstitutions() async {
+    List<Map<String, dynamic>> allInstitutions = await SqfliteDatabase.instance.getInstitutions();
+    setState(() {
+      institutions = allInstitutions.map((institution) => institution['name'] as String).toList();
+    });
+  }
 
   void createDeposit() {
     showDialog(
@@ -67,6 +70,8 @@ Future<void> _loadTransactions() async {
           onCancel: () => Navigator.of(context).pop(),
           specifyTask: "Enter Deposit Amount",
           currentDate: formattedDate,
+          userBalance: userBalance ?? 0.0,
+           institutions: institutions,
         );
       },
     );
@@ -75,7 +80,7 @@ Future<void> _loadTransactions() async {
   void makeDeposit() async {
     double depositAmount = double.tryParse(depositController.text) ?? 0.0;
     await SqfliteDatabase.instance.createTransaction(depositAmount, 'deposit', DateTime.now().toString());
-    
+
     setState(() {
       widget.onIncomeUpdated(widget.currentIncome + depositAmount);
       userBalance = (userBalance ?? 0) + depositAmount;
@@ -99,28 +104,50 @@ Future<void> _loadTransactions() async {
           onCancel: () => Navigator.of(context).pop(),
           specifyTask: "Enter Withdraw Amount",
           currentDate: formattedDate,
+          userBalance: userBalance ?? 0.0,
+          institutions: [],
         );
       },
     );
   }
 
- void makeWithdraw() async {
-  double withdrawAmount = double.tryParse(withdrawController.text) ?? 0.0;
-  await SqfliteDatabase.instance.createTransaction(withdrawAmount, 'withdrawal', DateTime.now().toString());
+  void makeWithdraw() async {
+    double withdrawAmount = double.tryParse(withdrawController.text) ?? 0.0;
 
-  setState(() {
-    widget.onExpensesUpdated(widget.currentExpenses + withdrawAmount);
-    userBalance = (userBalance ?? 0) - withdrawAmount;
-    withdrawController.clear();
+    if ((userBalance ?? 0) < withdrawAmount) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Insufficient Funds"),
+            content: const Text("You do not have enough funds to complete this withdrawal."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
 
-    transactions = List.from(transactions)..add({
-      "type": "Withdraw",
-      "amount": withdrawAmount,
-      "date": formattedDate,
+    await SqfliteDatabase.instance.createTransaction(withdrawAmount, 'withdrawal', DateTime.now().toString());
+
+    setState(() {
+      widget.onExpensesUpdated(widget.currentExpenses + withdrawAmount);
+      userBalance = (userBalance ?? 0) - withdrawAmount;
+      withdrawController.clear();
+      transactions = List.from(transactions)..add({
+        "type": "Withdraw",
+        "amount": withdrawAmount,
+        "date": formattedDate,
+      });
     });
-  });
-  Navigator.of(context).pop(); 
-}
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

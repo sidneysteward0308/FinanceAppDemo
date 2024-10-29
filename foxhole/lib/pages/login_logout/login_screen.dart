@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foxhole/pages/login_logout/createaccount_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:foxhole/database/Sqflite_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Color mainAccentColor = const Color.fromARGB(255, 40, 88, 133);
   late Color checkBoxColor;
 
-  // Method to get checkbox color based on state
+
   Color getColor(Set<WidgetState> states) {
     const Set<WidgetState> interactiveStates = <WidgetState>{
       WidgetState.pressed,
@@ -39,23 +40,30 @@ class _LoginScreenState extends State<LoginScreen> {
     return states.any(interactiveStates.contains) ? Colors.blue : checkBoxColor;
   }
 
-  
-  Future<void> _login() async {
-    userEmail = userEmailController.text.trim();
-    userPassword = userPasswordController.text.trim();
 
-    if (userEmail.isNotEmpty && userPassword.isNotEmpty) {
-      var user = await SqfliteDatabase.instance.getUser(userEmail, userPassword);
-      if (user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login successful!')));
-        Navigator.pushNamed(context, '/home'); 
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid email or password.')));
+Future<void> _login() async {
+  userEmail = userEmailController.text.trim();
+  userPassword = userPasswordController.text.trim();
+
+  if (userEmail.isNotEmpty && userPassword.isNotEmpty) {
+    var user = await SqfliteDatabase.instance.getUser(userEmail, userPassword);
+    if (user != null) {
+      if (isChecked) {
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
       }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login successful!')));
+      Navigator.pushReplacementNamed(context, '/home'); 
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter your credentials.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid email or password.')));
     }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter your credentials.')));
   }
+}
+
+
 
   @override
   Widget build(context) {
@@ -207,9 +215,9 @@ class _LoginScreenState extends State<LoginScreen> {
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
                     CreateaccountScreen(),
-                transitionDuration: Duration.zero, // No transition
+                transitionDuration: Duration.zero, 
                 reverseTransitionDuration:
-                    Duration.zero, // No reverse transition
+                    Duration.zero, 
               ),
             );},
                       style: TextButton.styleFrom(

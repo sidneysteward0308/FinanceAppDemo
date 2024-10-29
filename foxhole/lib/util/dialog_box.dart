@@ -2,25 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:foxhole/util/my_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DialogBox extends StatelessWidget {
-  final controller;
+class DialogBox extends StatefulWidget {
+  final TextEditingController controller;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
+  final String specifyTask;
+  final String currentDate;
+  final double userBalance;
+  final List<String> institutions;
 
-  VoidCallback onSave;
-  VoidCallback onCancel;
-  String specifyTask;
-  String currentDate;
-
-  DialogBox(
-      {super.key,
-      required this.controller,
-      required this.onSave,
-      required this.onCancel,
-      required this.specifyTask,
-      required this.currentDate});
+  DialogBox({
+    super.key,
+    required this.controller,
+    required this.onSave,
+    required this.onCancel,
+    required this.specifyTask,
+    required this.currentDate,
+    required this.userBalance,
+    required this.institutions,
+  });
 
   @override
-  Widget build(context) {
-    String hintText = "Select Institution";
+  State<DialogBox> createState() => _DialogBoxState();
+}
+
+class _DialogBoxState extends State<DialogBox> {
+  String selectedInstitution = "Select Institution"; // Default placeholder text
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.white,
       content: Container(
@@ -29,20 +39,14 @@ class DialogBox extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            //get new task
-
             Text(
-              currentDate,
+              widget.currentDate,
               style: GoogleFonts.lato(
                 color: Colors.black,
                 fontSize: 20,
               ),
             ),
-
-            const SizedBox(
-              height: 5,
-            ),
-
+            const SizedBox(height: 5),
             Container(
               width: 400,
               height: 50,
@@ -54,52 +58,44 @@ class DialogBox extends StatelessWidget {
               ),
               child: DropdownButton<String>(
                 isExpanded: true,
-                hint: Text(hintText),
+                value: selectedInstitution == "Select Institution" ? null : selectedInstitution,
+                hint: Text(selectedInstitution), 
                 dropdownColor: const Color.fromARGB(255, 230, 230, 230),
                 style: const TextStyle(color: Colors.black),
-                items: <String>[
-                  'First Institution',
-                  'Second Institution',
-                  'Third Institution',
-                  'Fourth Institution'
-                ].map((String value) {
+                items: widget.institutions.map((String institution) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                    onTap: () {
-                        hintText = value;
-                    },
+                    value: institution,
+                    child: Text(institution),
                   );
                 }).toList(),
-                onChanged: (_) {},
+                onChanged: (value) {
+                  setState(() {
+                    selectedInstitution = value ?? "Select Institution";
+                  });
+                },
               ),
             ),
-
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
             TextField(
-              controller: controller,
+              controller: widget.controller,
               decoration: InputDecoration(
-                  border: const OutlineInputBorder(), hintText: specifyTask),
+                border: const OutlineInputBorder(),
+                hintText: widget.specifyTask,
+              ),
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 MyButton(
                   buttonName: "Save",
-                  onPressed: onSave,
+                  onPressed: widget.onSave,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 MyButton(
                   buttonName: "Cancel",
-                  onPressed: onCancel,
-                )
+                  onPressed: widget.onCancel,
+                ),
               ],
             )
           ],

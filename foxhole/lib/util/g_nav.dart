@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foxhole/home_screen.dart';
-import 'package:foxhole/pages/nav_pages/cards_screen.dart';
+import 'package:foxhole/pages/functionality/link_institution.dart';
 import 'package:foxhole/pages/nav_pages/settings_screen.dart';
 import 'package:foxhole/pages/nav_pages/wallet_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -13,9 +13,10 @@ class CustomGNav extends StatefulWidget {
 }
 
 class _CustomGNavState extends State<CustomGNav> {
-
   double income = 0;
   double expenses = 0;
+
+  final List<String> institutions = [];
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +30,16 @@ class _CustomGNavState extends State<CustomGNav> {
         child: GNav(
           gap: 8,
           onTabChange: (index) {
-
             Widget targetScreen = const HomeScreen();
 
             if (index == 0) {
               targetScreen = const HomeScreen();
             } else if (index == 1) {
-
               targetScreen = WalletScreen(
                 onIncomeUpdated: (newIncome) {
                   setState(() {
                     income = newIncome;
+                    
                   });
                 },
                 onExpensesUpdated: (newExpenses) {
@@ -51,7 +51,7 @@ class _CustomGNavState extends State<CustomGNav> {
                 currentExpenses: expenses,
               );
             } else if (index == 2) {
-              targetScreen = const CardsScreen();
+              targetScreen = LinkInstitution(institutions: institutions);
             } else if (index == 3) {
               targetScreen = const SettingsScreen();
             }
@@ -61,9 +61,8 @@ class _CustomGNavState extends State<CustomGNav> {
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
                     targetScreen,
-                transitionDuration: Duration.zero, 
-                reverseTransitionDuration:
-                    Duration.zero, 
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
               ),
             );
           },
@@ -82,8 +81,8 @@ class _CustomGNavState extends State<CustomGNav> {
               text: "Wallet",
             ),
             GButton(
-              icon: Icons.credit_card,
-              text: "Cards",
+              icon: Icons.business,
+              text: "Institutions",
             ),
             GButton(
               icon: Icons.settings,

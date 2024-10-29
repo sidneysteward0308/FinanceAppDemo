@@ -3,14 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CategoryContainer extends StatelessWidget {
   final double categoryAmount;
-  final int categoryPercent;
+
   final String categoryName;
   final String categoryImagePath;
 
   CategoryContainer({
     super.key,
     required this.categoryAmount,
-    required this.categoryPercent,
     required this.categoryName,
     required this.categoryImagePath,
   });
@@ -39,12 +38,8 @@ class CategoryContainer extends StatelessWidget {
                     maxLines: 1, 
                   ),
                 ),
-                const Spacer(),
-                Text(
-                  "$categoryPercent%",
-                  style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w900),
-                  maxLines: 1,
-                ),
+          
+               
               ],
             ),
           ),
